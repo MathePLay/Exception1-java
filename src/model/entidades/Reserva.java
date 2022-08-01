@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.execoes.ExecaoDominio;
+
 public class Reserva {
 	
 	private Integer numeroQuarto;
@@ -13,10 +15,13 @@ public class Reserva {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	
-	public Reserva(Integer numeroQuarto, Date checkIn, Date chechOut) {
+	public Reserva(Integer numeroQuarto, Date checkIn, Date checkOut) throws ExecaoDominio {
+		if(!checkOut.after(checkIn)) {
+			throw new ExecaoDominio("A data de check-out deve ser superior à data de Check-in");
+		}
 		this.numeroQuarto = numeroQuarto;
 		this.checkIn = checkIn;
-		this.checkOut = chechOut;
+		this.checkOut = checkOut;
 	}
 
 	public Integer getNumeroQuarto() {
@@ -31,7 +36,7 @@ public class Reserva {
 		return checkIn;
 	}
 
-	public Date getChechOut() {
+	public Date getCheckOut() {
 		return checkOut;
 	}
 	
@@ -44,19 +49,18 @@ public class Reserva {
 	
 	
 	
-	public String atualizarData(Date checkIn, Date checkOut) {
+	public void atualizarData(Date checkIn, Date checkOut) throws ExecaoDominio {
 		
 		Date now = new Date();
 		if(checkIn.before(now) || checkOut.before(now)) {
-			return "As datas de check-in e check-out devem ser datas futuras";
+			throw new ExecaoDominio("As datas de check-in e check-out devem ser datas futuras");
 		}
 		if(!checkOut.after(checkIn)) {
-			return "A data de check-out deve ser superior à data de Check-in";
+			throw new ExecaoDominio("A data de check-out deve ser superior à data de Check-in");
 		}
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
-		
-		return null;
+	
 	}
 	
 	@Override
